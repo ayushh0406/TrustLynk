@@ -1,0 +1,1 @@
+C:\Users\Balram\ Panigrahi\OneDrive\Desktop\aptoss\contracts\soroban\target\wasm32v1-none\release\insurance_portal.wasm: C:\Users\Balram\ Panigrahi\OneDrive\Desktop\aptoss\contracts\soroban\src\lib.rs

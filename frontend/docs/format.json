@@ -1,0 +1,470 @@
+{
+  "api_documentation": {
+    "base_url": "http://localhost:8000",
+    "title": "ML-Based Insurance Fraud Detection API",
+    "version": "2.0.0",
+    "description": "Advanced fraud detection using 3 AI systems with 6 ML models"
+  },
+  "endpoints": {
+    "analyze_fraud_risk": {
+      "method": "POST",
+      "path": "/analyze-fraud-risk",
+      "description": "Main fraud analysis endpoint using Triple-AI system",
+      "content_type": "application/json",
+      "request_body": {
+        "claim": {
+          "claim_id": "string (required)",
+          "abha_id": "string (required)", 
+          "policy_id": "string (required)",
+          "claim_amount": "number (required)",
+          "claim_date": "string (required, format: YYYY-MM-DD)",
+          "hospital_details": {
+            "name": "string (required)",
+            "address": "string (required)",
+            "registration_number": "string (required)",
+            "doctor_name": "string (required)",
+            "doctor_registration": "string (required)"
+          },
+          "diagnosis": "string (required)",
+          "treatment": "string (required)",
+          "medications": ["string array (required)"],
+          "admission_date": "string (optional, format: YYYY-MM-DD)",
+          "discharge_date": "string (optional, format: YYYY-MM-DD)",
+          "claim_type": "string (required, values: 'cashless' or 'reimbursement')",
+          "documents": ["string array (required)"],
+          "ip_address": "string (optional)",
+          "device_info": "string (optional)"
+        },
+        "abha_user": {
+          "abhaId": "string (required)",
+          "fullName": "string (required)",
+          "dob": "string (required, format: YYYY-MM-DD)",
+          "gender": "string (required)",
+          "bloodGroup": "string (required)",
+          "address": {
+            "state": "string (required)",
+            "district": "string (required)",
+            "pincode": "string (required)",
+            "address": "string (required)"
+          },
+          "phone": "string (required)",
+          "email": "string (required)",
+          "allergies": ["string array (required)"],
+          "medicalHistory": [
+            {
+              "condition": "string (required)",
+              "diagnosedDate": "string (required)",
+              "treatment": "string (required)",
+              "medications": ["string array (required)"],
+              "status": "string (required)"
+            }
+          ],
+          "existingInsurance": [
+            {
+              "provider": "string (required)",
+              "policyNumber": "string (required)",
+              "coverage": "string (required)",
+              "expiryDate": "string (required)"
+            }
+          ],
+          "emergencyContact": {
+            "name": "string (required)",
+            "relation": "string (required)",
+            "phone": "string (required)"
+          },
+          "hasConsent": "boolean (required)"
+        },
+        "policy": {
+          "coverage_amount": "string (required)",
+          "created_at": "string (required, unix timestamp)",
+          "created_by": "string (required)",
+          "description": "string (required)",
+          "duration_days": "string (required)",
+          "max_age": "string (required)",
+          "min_age": "string (required)",
+          "monthly_premium": "string (required)",
+          "policy_id": "string (required)",
+          "policy_type": "integer (required)",
+          "title": "string (required)",
+          "waiting_period_days": "string (required)",
+          "yearly_premium": "string (required)"
+        }
+      },
+      "sample_request": {
+        "claim": {
+          "claim_id": "CLM-2024-001234",
+          "abha_id": "ABHA-1234567890",
+          "policy_id": "POL-2024-5678",
+          "claim_amount": 85000.0,
+          "claim_date": "2024-08-20",
+          "hospital_details": {
+            "name": "City General Hospital",
+            "address": "123 Medical Center, Mumbai, Maharashtra",
+            "registration_number": "REG123456789",
+            "doctor_name": "Dr. Rajesh Sharma",
+            "doctor_registration": "DOC789456"
+          },
+          "diagnosis": "Acute appendicitis with complications requiring emergency surgery",
+          "treatment": "Emergency appendectomy with post-operative care and antibiotics",
+          "medications": ["Amoxicillin", "Paracetamol", "Ibuprofen"],
+          "admission_date": "2024-08-18",
+          "discharge_date": "2024-08-22",
+          "claim_type": "cashless",
+          "documents": ["medical_report", "prescription", "bill", "discharge_summary", "lab_report"],
+          "ip_address": "192.168.1.100",
+          "device_info": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0"
+        },
+        "abha_user": {
+          "abhaId": "ABHA-1234567890",
+          "fullName": "Amit Kumar Singh",
+          "dob": "1985-03-15",
+          "gender": "Male",
+          "bloodGroup": "B+",
+          "address": {
+            "state": "Maharashtra",
+            "district": "Mumbai",
+            "pincode": "400001",
+            "address": "Flat 302, Building A, Sector 12, Mumbai"
+          },
+          "phone": "9876543210",
+          "email": "amit.singh@email.com",
+          "allergies": ["Penicillin"],
+          "medicalHistory": [
+            {
+              "condition": "Hypertension",
+              "diagnosedDate": "2020-01-15",
+              "treatment": "Medication and lifestyle changes",
+              "medications": ["Amlodipine", "Lisinopril"],
+              "status": "Controlled"
+            }
+          ],
+          "existingInsurance": [
+            {
+              "provider": "Star Health Insurance",
+              "policyNumber": "STAR123456",
+              "coverage": "500000",
+              "expiryDate": "2025-03-15"
+            }
+          ],
+          "emergencyContact": {
+            "name": "Priya Singh",
+            "relation": "Wife",
+            "phone": "9876543211"
+          },
+          "hasConsent": true
+        },
+        "policy": {
+          "coverage_amount": "500000",
+          "created_at": "1677648000",
+          "created_by": "AGENT001",
+          "description": "Comprehensive health insurance with cashless facility",
+          "duration_days": "365",
+          "max_age": "65",
+          "min_age": "18",
+          "monthly_premium": "3500",
+          "policy_id": "POL-2024-5678",
+          "policy_type": 1,
+          "title": "Premium Health Care Plus",
+          "waiting_period_days": "30",
+          "yearly_premium": "42000"
+        }
+      },
+      "response_body": {
+        "ai1_score": "integer (0-100)",
+        "ai2_score": "integer (0-100)", 
+        "ai3_score": "integer (0-100)",
+        "aggregate_score": "integer (0-100)",
+        "risk_level": "string (LOW/MEDIUM/HIGH)"
+      },
+      "sample_response": {
+        "ai1_score": 25,
+        "ai2_score": 18,
+        "ai3_score": 12,
+        "aggregate_score": 19,
+        "risk_level": "LOW"
+      },
+      "error_responses": {
+        "400": {
+          "detail": "Validation error in request body"
+        },
+        "500": {
+          "detail": "Error analyzing fraud risk: Internal server error"
+        }
+      }
+    },
+    "retrain_models": {
+      "method": "POST",
+      "path": "/retrain-models",
+      "description": "Retrain ML models with updated synthetic data",
+      "content_type": "application/json",
+      "request_body": "No body required",
+      "sample_request": {},
+      "response_body": {
+        "message": "string",
+        "timestamp": "string (ISO format)"
+      },
+      "sample_response": {
+        "message": "Models retrained successfully",
+        "timestamp": "2024-08-24T10:30:45.123456"
+      },
+      "error_responses": {
+        "500": {
+          "detail": "Error retraining models: Internal server error"
+        }
+      }
+    },
+    "model_info": {
+      "method": "GET",
+      "path": "/model-info",
+      "description": "Get information about current ML models",
+      "content_type": "application/json",
+      "request_body": "No body required",
+      "sample_request": {},
+      "response_body": {
+        "models": {
+          "ai1": {
+            "type": "string",
+            "purpose": "string",
+            "weight_in_aggregate": "number",
+            "features_count": "integer"
+          },
+          "ai2": {
+            "type": "string",
+            "purpose": "string", 
+            "weight_in_aggregate": "number",
+            "features_count": "integer"
+          },
+          "ai3": {
+            "type": "string",
+            "purpose": "string",
+            "weight_in_aggregate": "number",
+            "features_count": "integer"
+          }
+        },
+        "risk_thresholds": {
+          "LOW": "string",
+          "MEDIUM": "string",
+          "HIGH": "string"
+        },
+        "last_updated": "string (ISO format)"
+      },
+      "sample_response": {
+        "models": {
+          "ai1": {
+            "type": "RandomForestClassifier + IsolationForest",
+            "purpose": "Pattern & Statistical Analysis",
+            "weight_in_aggregate": 0.3,
+            "features_count": 25
+          },
+          "ai2": {
+            "type": "GradientBoostingClassifier + IsolationForest",
+            "purpose": "Medical/Rules Consistency Analysis",
+            "weight_in_aggregate": 0.4,
+            "features_count": 22
+          },
+          "ai3": {
+            "type": "RandomForestClassifier + IsolationForest",
+            "purpose": "Behavioral/Contextual Analysis",
+            "weight_in_aggregate": 0.3,
+            "features_count": 23
+          }
+        },
+        "risk_thresholds": {
+          "LOW": "0-35",
+          "MEDIUM": "36-55",
+          "HIGH": "56-100"
+        },
+        "last_updated": "2024-08-24T10:30:45.123456"
+      },
+      "error_responses": {
+        "500": {
+          "detail": "Error getting model info: Internal server error"
+        }
+      }
+    },
+    "feature_importance": {
+      "method": "GET",
+      "path": "/feature-importance/{ai_model}",
+      "description": "Get feature importance for specific AI model",
+      "content_type": "application/json",
+      "path_parameters": {
+        "ai_model": "string (required, values: 'ai1', 'ai2', 'ai3')"
+      },
+      "request_body": "No body required",
+      "sample_request": "GET /feature-importance/ai1",
+      "response_body": {
+        "ai_model": "string",
+        "feature_importance": [
+          {
+            "feature": "string",
+            "importance": "number"
+          }
+        ],
+        "total_features": "integer"
+      },
+      "sample_response": {
+        "ai_model": "ai1",
+        "feature_importance": [
+          {
+            "feature": "claim_to_coverage_ratio",
+            "importance": 0.245
+          },
+          {
+            "feature": "days_since_policy",
+            "importance": 0.198
+          },
+          {
+            "feature": "claim_amount",
+            "importance": 0.156
+          },
+          {
+            "feature": "user_age",
+            "importance": 0.134
+          },
+          {
+            "feature": "medical_history_count",
+            "importance": 0.089
+          },
+          {
+            "feature": "treatment_duration",
+            "importance": 0.067
+          },
+          {
+            "feature": "existing_insurance_count",
+            "importance": 0.045
+          },
+          {
+            "feature": "document_count",
+            "importance": 0.034
+          },
+          {
+            "feature": "claim_month",
+            "importance": 0.032
+          }
+        ],
+        "total_features": 25
+      },
+      "error_responses": {
+        "400": {
+          "detail": "Invalid AI model. Use 'ai1', 'ai2', or 'ai3'"
+        },
+        "500": {
+          "detail": "Error getting feature importance: Internal server error"
+        }
+      }
+    },
+    "health_check": {
+      "method": "GET",
+      "path": "/health",
+      "description": "System health check with model status",
+      "content_type": "application/json",
+      "request_body": "No body required",
+      "sample_request": {},
+      "response_body": {
+        "status": "string",
+        "models_loaded": "boolean",
+        "timestamp": "string (ISO format)",
+        "ml_components": {
+          "ai1_loaded": "boolean",
+          "ai2_loaded": "boolean", 
+          "ai3_loaded": "boolean"
+        }
+      },
+      "sample_response": {
+        "status": "healthy",
+        "models_loaded": true,
+        "timestamp": "2024-08-24T10:30:45.123456",
+        "ml_components": {
+          "ai1_loaded": true,
+          "ai2_loaded": true,
+          "ai3_loaded": true
+        }
+      },
+      "error_response": {
+        "status": "unhealthy",
+        "error": "Model loading failed",
+        "timestamp": "2024-08-24T10:30:45.123456"
+      }
+    },
+    "root": {
+      "method": "GET",
+      "path": "/",
+      "description": "API information endpoint",
+      "content_type": "application/json",
+      "request_body": "No body required",
+      "sample_request": {},
+      "response_body": {
+        "message": "string",
+        "version": "string",
+        "ml_models": "string",
+        "ai_components": ["string array"]
+      },
+      "sample_response": {
+        "message": "ML-Based Insurance Fraud Detection API",
+        "version": "2.0.0",
+        "ml_models": "RandomForest, GradientBoosting, IsolationForest",
+        "ai_components": [
+          "Pattern Analysis",
+          "Medical Consistency", 
+          "Behavioral Analysis"
+        ]
+      }
+    }
+  },
+  "common_headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
+  "response_codes": {
+    "200": "Success",
+    "400": "Bad Request - Invalid input data",
+    "422": "Validation Error - Pydantic model validation failed",
+    "500": "Internal Server Error - ML model or processing error"
+  },
+  "data_types_guide": {
+    "risk_levels": {
+      "LOW": "Score 0-35, Safe to approve automatically",
+      "MEDIUM": "Score 36-55, Requires manual review",
+      "HIGH": "Score 56-100, High fraud risk, investigate thoroughly"
+    },
+    "claim_types": [
+      "cashless",
+      "reimbursement"
+    ],
+    "document_types": [
+      "medical_report",
+      "prescription", 
+      "bill",
+      "discharge_summary",
+      "lab_report",
+      "diagnostic_report",
+      "treatment_summary"
+    ],
+    "ai_model_purposes": {
+      "ai1": "Analyzes statistical patterns, timing anomalies, and financial ratios",
+      "ai2": "Validates medical consistency, age-appropriate treatments, cost analysis",
+      "ai3": "Examines digital behavior, document completeness, geographic patterns"
+    }
+  },
+  "integration_notes": {
+    "authentication": "Currently no authentication required - add API keys for production",
+    "rate_limiting": "No rate limiting implemented - add for production use",
+    "cors": "Configure CORS headers for frontend integration",
+    "error_handling": "Always check response status codes and handle errors appropriately",
+    "caching": "Consider caching model-info and feature-importance responses",
+    "monitoring": "Use health endpoint for system monitoring and alerts"
+  },
+  "frontend_integration_tips": {
+    "form_validation": "Validate required fields before API call to reduce errors",
+    "loading_states": "Show loading indicators during fraud analysis (can take 1-3 seconds)",
+    "error_display": "Parse error messages from 'detail' field in error responses",
+    "score_visualization": "Use progress bars or gauges to display AI scores (0-100)",
+    "risk_level_colors": {
+      "LOW": "Green (#10B981)",
+      "MEDIUM": "Yellow (#F59E0B)", 
+      "HIGH": "Red (#EF4444)"
+    },
+    "feature_importance_charts": "Use bar charts to display feature importance data",
+    "real_time_updates": "Consider WebSocket for real-time model status updates"
+  }
+}
